@@ -22,10 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.globalsolutions.aquaguard.model.Relatorio;
-import com.globalsolutions.aquaguard.model.Usuario;
 import com.globalsolutions.aquaguard.repository.RelatorioRepository;
-import com.globalsolutions.aquaguard.repository.UsuarioRepository;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

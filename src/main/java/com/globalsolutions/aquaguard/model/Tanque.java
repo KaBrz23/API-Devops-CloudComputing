@@ -3,6 +3,7 @@ package com.globalsolutions.aquaguard.model;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.globalsolutions.aquaguard.validation.Fissura;
 
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotBlank;
@@ -15,8 +16,8 @@ public class Tanque {
 
     @NotBlank(message = "{tanque.nometanque.notblank}")
     private String nomeTanque;
-
-    @NotBlank(message = "{tanque.hasfissuras.notblank}")
+    
+    @Fissura
     private boolean hasFissuras;
 
     @JsonFormat(pattern = "dd/MM/yyyy")
