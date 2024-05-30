@@ -13,7 +13,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -24,7 +23,7 @@ public class Usuario {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id_usuario;
 
-    @NotNull
+    @NotBlank(message = "{usuario.nome.notblank}")
     private String nome;
 
     @Email
@@ -43,7 +42,7 @@ public class Usuario {
 
     @Past
     @JsonFormat(pattern = "dd/MM/yyyy")
-    @NotNull(message = "{usuario.datanascimento.notnull}")
+    @NotBlank(message = "{usuario.datanascimento.notblank}")
     private LocalDate data_nascimento;
 
     @TipoSexo
