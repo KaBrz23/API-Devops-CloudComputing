@@ -3,6 +3,7 @@ package com.globalsolutions.aquaguard.model;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.globalsolutions.aquaguard.validation.StatusSaude;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -14,7 +15,7 @@ import lombok.Data;
 @Data
 public class Tilapia {
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id_tilapia;
+    private Long id_tilapia;
 
     @StatusSaude
     private String status_saude;
