@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import org.hibernate.validator.constraints.br.CPF;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.globalsolutions.aquaguard.validation.tipoSexo;
+import com.globalsolutions.aquaguard.validation.TipoSexo;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -46,6 +46,6 @@ public class Usuario {
     @NotNull(message = "{usuario.datanascimento.notnull}")
     private LocalDate data_nascimento;
 
-    @tipoSexo
+    @TipoSexo
     private String sexo;
 }

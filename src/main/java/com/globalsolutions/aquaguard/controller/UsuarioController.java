@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.globalsolutions.aquaguard.model.Usuario;
-import com.globalsolutions.aquaguard.repository.usuarioRepository;
+import com.globalsolutions.aquaguard.repository.UsuarioRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -36,9 +36,9 @@ import lombok.extern.slf4j.Slf4j;
 @CacheConfig(cacheNames = "usuarios")
 @Slf4j
 @Tag(name = "usuário", description = "Usuário que irá se cadastrar no aplicativo de monitoramento")
-public class usuarioController {
+public class UsuarioController {
     @Autowired
-    usuarioRepository repositoryUsuario;
+    UsuarioRepository repositoryUsuario;
 
     @GetMapping
     @Cacheable

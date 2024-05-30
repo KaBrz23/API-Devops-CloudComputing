@@ -1,5 +1,5 @@
 package com.globalsolutions.aquaguard.repository;
 
-public class tilapiaRepository {
+public class TilapiaRepository {
     
 }

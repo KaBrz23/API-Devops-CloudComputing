@@ -8,9 +8,8 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-public class validationErrorHandler {
+public class ValidationErrorHandler {
     record ValidationError(String campo, String mensagem){
         public ValidationError(FieldError fieldError){
             this(fieldError.getField(), fieldError.getDefaultMessage());
