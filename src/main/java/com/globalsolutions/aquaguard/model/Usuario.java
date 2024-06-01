@@ -3,8 +3,13 @@ package com.globalsolutions.aquaguard.model;
 import java.time.LocalDate;
 
 import org.hibernate.validator.constraints.br.CPF;
+import org.springframework.hateoas.EntityModel;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.globalsolutions.aquaguard.controller.UsuarioController;
 import com.globalsolutions.aquaguard.validation.TipoSexo;
 
 import jakarta.persistence.Entity;
@@ -54,4 +59,13 @@ public class Usuario {
 
     @TipoSexo
     private String sexo;
+
+    public EntityModel<Usuario> toEntityModel() {
+        return EntityModel.of(
+            this,
+            linkTo(methodOn(UsuarioController.class).show(id_usuario)).withSelfRel(),
+            linkTo(methodOn(UsuarioController.class).destroy(id_usuario)).withRel("delete"),
+            linkTo(methodOn(UsuarioController.class).index(null)).withRel("contents")
+        );
+    }
 }
