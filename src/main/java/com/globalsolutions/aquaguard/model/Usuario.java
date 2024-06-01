@@ -13,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -48,7 +49,7 @@ public class Usuario {
 
     @Past
     @JsonFormat(pattern = "dd/MM/yyyy")
-    @NotBlank(message = "{usuario.datanascimento.notblank}")
+    @NotNull(message = "{usuario.datanascimento.notnull}")
     private LocalDate data_nascimento;
 
     @TipoSexo

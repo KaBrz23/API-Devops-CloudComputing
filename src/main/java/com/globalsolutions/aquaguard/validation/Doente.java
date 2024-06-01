@@ -10,7 +10,7 @@ import jakarta.validation.Payload;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = TipoSexoValidator.class)
+@Constraint(validatedBy = DoenteValidator.class)
 public @interface Doente {
     String message() default "{tilapia.isdoente.message}";
 

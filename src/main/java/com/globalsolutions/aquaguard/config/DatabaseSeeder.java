@@ -18,7 +18,7 @@ import com.globalsolutions.aquaguard.repository.TilapiaRepository;
 import com.globalsolutions.aquaguard.repository.UsuarioRepository;
 
 @Configuration
-@Profile("dev")
+// @Profile("dev")
 public class DatabaseSeeder implements CommandLineRunner{
     @Autowired
     UsuarioRepository usuarioRepository;

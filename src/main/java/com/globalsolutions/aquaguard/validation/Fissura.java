@@ -10,7 +10,7 @@ import jakarta.validation.Payload;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = TipoSexoValidator.class)
+@Constraint(validatedBy = FissuraValidator.class)
 public @interface Fissura {
     String message() default "{tanque.hasfissuras.message}";
 
