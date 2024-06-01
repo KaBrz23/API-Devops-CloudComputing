@@ -2,7 +2,13 @@ package com.globalsolutions.aquaguard.model;
 
 import java.time.LocalDate;
 
+import org.springframework.hateoas.EntityModel;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.globalsolutions.aquaguard.controller.UsuarioController;
 import com.globalsolutions.aquaguard.validation.Fissura;
 
 import jakarta.persistence.Entity;
@@ -36,4 +42,13 @@ public class Tanque {
 
     @ManyToOne
     private Usuario usuario;
+
+    public EntityModel<Tanque> toEntityModel() {
+        return EntityModel.of(
+            this,
+            linkTo(methodOn(UsuarioController.class).show(id_tanque)).withSelfRel(),
+            linkTo(methodOn(UsuarioController.class).destroy(id_tanque)).withRel("delete"),
+            linkTo(methodOn(UsuarioController.class).index(null)).withRel("contents")
+        );
+    }
 }

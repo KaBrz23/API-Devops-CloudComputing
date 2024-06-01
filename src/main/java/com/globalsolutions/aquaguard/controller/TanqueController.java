@@ -8,6 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.globalsolutions.aquaguard.model.Tanque;
+import com.globalsolutions.aquaguard.model.Usuario;
 import com.globalsolutions.aquaguard.repository.TanqueRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,26 +46,37 @@ import lombok.extern.slf4j.Slf4j;
 public class TanqueController {
     @Autowired
     TanqueRepository repositoryTanque;
+
+    @Autowired
+    PagedResourcesAssembler<Tanque> pageAssembler;
     
     @GetMapping
     @Cacheable
     @Operation(
         summary = "Listar Tanques"
     )
-    public List<Tanque> index() {
-        return repositoryTanque.findAll();
+    public PagedModel<EntityModel<Tanque>> index(
+        @PageableDefault(size = 3) Pageable pageable
+    ) {
+        Page<Tanque> page = null;
+
+        if (page == null){
+            page = repositoryTanque.findAll(pageable);
+        }
+
+        return pageAssembler.toModel(page);
     }
 
     @GetMapping("{id}")
     @Operation(
         summary = "Listar Tanque por id"
     )
-    public ResponseEntity<Tanque> listarTanque(@PathVariable Long id){
-
-        return repositoryTanque
-                .findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public EntityModel<Tanque> show(@PathVariable Long id){
+        var tanque =  repositoryTanque.findById(id).orElseThrow(
+            () -> new IllegalArgumentException("Tanque não encontrado")
+        );
+        
+        return tanque.toEntityModel();
     }
 
     @PostMapping
@@ -71,10 +89,12 @@ public class TanqueController {
         @ApiResponse(responseCode = "201"),
         @ApiResponse(responseCode = "400")
     })
-    public Tanque create(@RequestBody @Valid Tanque tanque) {
-        log.info("Cadastrando tanque: {}", tanque);
+    public ResponseEntity<Tanque> create(@RequestBody @Valid Tanque tanque) {
         repositoryTanque.save(tanque);
-        return tanque;
+
+        return ResponseEntity
+                    .created(tanque.toEntityModel().getRequiredLink("self").toUri())
+                    .body(tanque);
     }
 
     @DeleteMapping("{id}")
@@ -88,11 +108,13 @@ public class TanqueController {
         @ApiResponse(responseCode = "404"),
         @ApiResponse(responseCode = "401")
     })
-    public void destroy(@PathVariable Long id) {
-        log.info("Apagando tanque");
+    public ResponseEntity<Object> destroy(@PathVariable Long id) {
+        repositoryTanque.findById(id).orElseThrow(
+            () -> new IllegalArgumentException("Tanque não encontrado")
+        );
 
-        verificarSeExisteTanque(id);
         repositoryTanque.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("{id}")
@@ -106,20 +128,18 @@ public class TanqueController {
         @ApiResponse(responseCode = "401"),
         @ApiResponse(responseCode = "404")
     })
-    public Tanque update(@PathVariable Long id, @RequestBody Tanque tanque){
-        log.info("atualizando tanque com id {} para {}", id, tanque);
-
-        verificarSeExisteTanque(id);
-        tanque.setId_tanque(id);
-        return repositoryTanque.save(tanque);
-    }
-
-    private void verificarSeExisteTanque(Long id) {
-        repositoryTanque
-            .findById(id)
-            .orElseThrow(() -> new ResponseStatusException(
-                                HttpStatus.NOT_FOUND, 
-                                "Não existe tanque com o id informado. Consulte lista em /tanque"
-                            ));
+    public ResponseEntity<Tanque> update(@PathVariable Long id, @RequestBody Tanque tanqueAtualizado){
+        Tanque tanque = repositoryTanque.findById(id).orElseThrow(
+            () -> new IllegalArgumentException("Tanque não encontrado")
+        );
+        
+        tanque.setNomeTanque(tanqueAtualizado.getNomeTanque());
+        tanque.setHasFissuras(tanqueAtualizado.getHasFissuras());
+        tanque.setData(tanqueAtualizado.getData());
+        tanque.setUsuario(tanqueAtualizado.getUsuario());
+    
+        repositoryTanque.save(tanque);
+    
+        return ResponseEntity.ok(tanque);
     }
 }
