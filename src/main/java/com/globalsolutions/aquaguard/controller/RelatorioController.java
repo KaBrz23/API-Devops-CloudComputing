@@ -2,12 +2,16 @@ package com.globalsolutions.aquaguard.controller;
 
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,8 +23,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
-
 import com.globalsolutions.aquaguard.model.Relatorio;
 import com.globalsolutions.aquaguard.repository.RelatorioRepository;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,36 +30,45 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/relatorio")
 @CacheConfig(cacheNames = "relatorios")
-@Slf4j
 @Tag(name = "relatório", description = "Relatório dos logs das tilápias e dos tanques")
 public class RelatorioController {
     @Autowired
     RelatorioRepository repositoryRelatorio;
+
+    @Autowired
+    PagedResourcesAssembler<Relatorio> pageAssembler;
 
     @GetMapping
     @Cacheable
     @Operation(
         summary = "Listar Relatório"
     )
-    public List<Relatorio> index() {
-        return repositoryRelatorio.findAll();
+    public PagedModel<EntityModel<Relatorio>> index(
+        @PageableDefault(size = 3) Pageable pageable
+    ) {
+        Page<Relatorio> page = null;
+
+        if (page == null){
+            page = repositoryRelatorio.findAll(pageable);
+        }
+
+        return pageAssembler.toModel(page);
     }
 
     @GetMapping("{id}")
     @Operation(
         summary = "Listar Relatório por id"
     )
-    public ResponseEntity<Relatorio> listarRelatorio(@PathVariable Long id){
-
-        return repositoryRelatorio
-                .findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public EntityModel<Relatorio> show(@PathVariable Long id){
+        var relatorio =  repositoryRelatorio.findById(id).orElseThrow(
+            () -> new IllegalArgumentException("Relatório não encontrado")
+        );
+        
+        return relatorio.toEntityModel();
     }
 
     @PostMapping
@@ -70,10 +81,12 @@ public class RelatorioController {
         @ApiResponse(responseCode = "201"),
         @ApiResponse(responseCode = "400")
     })
-    public Relatorio create(@RequestBody @Valid Relatorio relatorio) {
-        log.info("Criando relatório: {}", relatorio);
+    public ResponseEntity<Relatorio> create(@RequestBody @Valid Relatorio relatorio) {
         repositoryRelatorio.save(relatorio);
-        return relatorio;
+
+        return ResponseEntity
+                    .created(relatorio.toEntityModel().getRequiredLink("self").toUri())
+                    .body(relatorio);
     }
 
     @DeleteMapping("{id}")
@@ -87,11 +100,13 @@ public class RelatorioController {
         @ApiResponse(responseCode = "404"),
         @ApiResponse(responseCode = "401")
     })
-    public void destroy(@PathVariable Long id) {
-        log.info("Apagando relatório");
+    public ResponseEntity<Object> destroy(@PathVariable Long id) {
+        repositoryRelatorio.findById(id).orElseThrow(
+            () -> new IllegalArgumentException("Relatório não encontrado")
+        );
 
-        verificarSeExisteRelatorio(id);
         repositoryRelatorio.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("{id}")
@@ -105,20 +120,16 @@ public class RelatorioController {
         @ApiResponse(responseCode = "401"),
         @ApiResponse(responseCode = "404")
     })
-    public Relatorio update(@PathVariable Long id, @RequestBody Relatorio relatorio){
-        log.info("atualizando relatório com id {} para {}", id, relatorio);
-
-        verificarSeExisteRelatorio(id);
-        relatorio.setId_relatorio(id);
-        return repositoryRelatorio.save(relatorio);
-    }
-
-    private void verificarSeExisteRelatorio(Long id) {
-        repositoryRelatorio
-            .findById(id)
-            .orElseThrow(() -> new ResponseStatusException(
-                                HttpStatus.NOT_FOUND, 
-                                "Não existe relatório com o id informado. Consulte lista em /relatorio"
-                            ));
+    public ResponseEntity<Relatorio> update(@PathVariable Long id, @RequestBody Relatorio relatorioAtualizado){
+        Relatorio relatorio = repositoryRelatorio.findById(id).orElseThrow(
+            () -> new IllegalArgumentException("Relatório não encontrado")
+        );
+        
+        relatorio.setDescricao(relatorioAtualizado.getDescricao());
+        relatorio.setUsuario(relatorioAtualizado.getUsuario());
+    
+        repositoryRelatorio.save(relatorio);
+    
+        return ResponseEntity.ok(relatorio);
     }
 }

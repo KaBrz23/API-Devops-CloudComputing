@@ -1,8 +1,12 @@
 package com.globalsolutions.aquaguard.model;
 
 import java.time.LocalDate;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import org.springframework.hateoas.EntityModel;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.globalsolutions.aquaguard.controller.TilapiaController;
 import com.globalsolutions.aquaguard.validation.Doente;
 
 import jakarta.persistence.Entity;
@@ -32,4 +36,12 @@ public class Tilapia {
 
     @ManyToOne
     private Tanque tanque;
+
+    public EntityModel<Tilapia> toEntityModel() {
+        return EntityModel.of(
+            this,
+            linkTo(methodOn(TilapiaController.class).show(id_tilapia)).withSelfRel(),
+            linkTo(methodOn(TilapiaController.class).index(null)).withRel("contents")
+        );
+    }
 }

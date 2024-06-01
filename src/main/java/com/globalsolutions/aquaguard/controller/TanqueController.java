@@ -2,8 +2,6 @@ package com.globalsolutions.aquaguard.controller;
 
 import static org.springframework.http.HttpStatus.NO_CONTENT;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
@@ -25,10 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
-
 import com.globalsolutions.aquaguard.model.Tanque;
-import com.globalsolutions.aquaguard.model.Usuario;
 import com.globalsolutions.aquaguard.repository.TanqueRepository;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,12 +31,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/tanque")
 @CacheConfig(cacheNames = "tanques")
-@Slf4j
 @Tag(name = "tanque", description = "tanque que está sendo monitorado")
 public class TanqueController {
     @Autowired
