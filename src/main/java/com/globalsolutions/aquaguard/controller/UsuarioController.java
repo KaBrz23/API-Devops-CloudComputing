@@ -134,20 +134,23 @@ public class UsuarioController {
         @ApiResponse(responseCode = "401"),
         @ApiResponse(responseCode = "404")
     })
-    public Usuario update(@PathVariable Long id_usuario, @RequestBody Usuario usuario){
-        log.info("atualizando usuário com id {} para {}", id_usuario, usuario);
-
-        verificarSeExisteUsuario(id_usuario);
-        usuario.setId_usuario(id_usuario);
-        return repositoryUsuario.save(usuario);
+    public ResponseEntity<Usuario> update(@PathVariable Long id_usuario, @RequestBody @Valid Usuario usuarioAtualizado) {
+        Usuario usuario = repositoryUsuario.findById(id_usuario).orElseThrow(
+            () -> new IllegalArgumentException("Usuário não encontrado")
+        );
+    
+        usuario.setNome(usuarioAtualizado.getNome());
+        usuario.setEmail(usuarioAtualizado.getEmail());
+        usuario.setSenha(usuarioAtualizado.getSenha());
+        usuario.setTelefone(usuarioAtualizado.getTelefone());
+        usuario.setCpf(usuarioAtualizado.getCpf());
+        usuario.setData_nascimento(usuarioAtualizado.getData_nascimento());
+        usuario.setSexo(usuarioAtualizado.getSexo());
+    
+        repositoryUsuario.save(usuario);
+    
+        return ResponseEntity.ok(usuario);
     }
 
-    private void verificarSeExisteUsuario(Long id_usuario) {
-        repositoryUsuario
-            .findById(id_usuario)
-            .orElseThrow(() -> new ResponseStatusException(
-                                HttpStatus.NOT_FOUND, 
-                                "Não existe usuário com o id informado. Consulte lista em /usuario"
-                            ));
-    }
+
 }
