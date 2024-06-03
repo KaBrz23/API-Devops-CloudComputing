@@ -6,8 +6,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-
 import com.globalsolutions.aquaguard.model.Relatorio;
 import com.globalsolutions.aquaguard.model.Tanque;
 import com.globalsolutions.aquaguard.model.Tilapia;
