@@ -262,7 +262,7 @@
 					"response": []
 				},
 				{
-					"name": "New Request",
+					"name": "Cadastrar Relatório",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -280,7 +280,7 @@
 					"response": []
 				},
 				{
-					"name": "New Request",
+					"name": "Atualizar Relatório",
 					"request": {
 						"method": "PUT",
 						"header": [],
