@@ -18,7 +18,7 @@ Thomas Nícolas de Melo Mendonça - RM99832 (Mobile Application Development)
 
 ## Instrução de como rodar a aplicação;
 
-###Local
+### Local
 1. Baixar o extension pack do JAVA
 2. Ir até o AQUAGUARD-API/src/main/java/com/globalsolutions/aquaguard/AquaGuardApplication.java
 3. Clicar em Run para rodar a API
@@ -26,7 +26,7 @@ Thomas Nícolas de Melo Mendonça - RM99832 (Mobile Application Development)
 5. Colocar Infos necessárias para conectar no Banco Oracle pelo properties
 7. Testar as requisições pelo Postman ou Insomnia
 
-###Nuvem
+### Nuvem
 1. Pegar a URL do RailWay - aquaguard-api-production.up.railway.app
 2. Acessar a documentação do Swagger via aquaguard-api-production.up.railway.app/docs para pegar os endpoints
 3. Realizar os testes de requisições pelo Postman ou Insomnia
